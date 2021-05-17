@@ -8,7 +8,11 @@
       "definition",
       "translation"
   ],
-  "license": "MIT",
+  "license": "BSD-3-Clause",
+  "authors": [{
+    "name": "Alexandre Saelens",
+    "email": "alexandre.saelens@dna.co.nz"
+  }],
   "require": {
       "silverstripe/vendor-plugin": "^1.0",
       "silverstripe/framework": "^4.0"
