@@ -1,0 +1,16 @@
+{
+  "name": "dnadesign/silverstripe-audio-definition",
+  "description": "Provides the models and interface to include keywords audio definition in content",
+  "type": "silverstripe-vendormodule",
+  "keywords": [
+      "silverstripe",
+      "audio",
+      "definition",
+      "translation"
+  ],
+  "license": "MIT",
+  "require": {
+      "silverstripe/vendor-plugin": "^1.0",
+      "silverstripe/framework": "^4.0"
+  }
+}
