@@ -13,6 +13,7 @@ class TextDefinition extends DataObject
         'UID' => 'Varchar(100)',
         'Content' => 'Text',
         'Type' => 'Varchar(50)',
+        'Displayed' => 'Boolean',
         'Sort' => 'Int'
     ];
 
@@ -20,11 +21,28 @@ class TextDefinition extends DataObject
         'AudioDefinition' => AudioDefinition::class
     ];
 
-    private static $summary_fields = [
-        'UID' => 'UID',
-        'Content' => 'Definition',
-        'Type' => 'Type'
+    private static $defaults = [
+        'Displayed' => true
     ];
 
     private static $default_sort = 'Sort ASC';
+
+    private static $summary_fields = [
+        'UID' => 'UID',
+        'Content' => 'Definition',
+        'Type' => 'Type',
+        'Displayed.Nice' => 'Displayed'
+    ];
+
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+
+        $fields->removeByName([
+            'Sort',
+            'AudioDefinitionID'
+        ]);
+        
+        return $fields;
+    }
 }

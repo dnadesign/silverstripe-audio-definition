@@ -1,6 +1,6 @@
 <span class="audio-definition" lang="$LangAttr">
     <% if $LinkToAudioFile %><button id="audiodef-trigger-{$ID}" aria-controls="audiodef-player-{$ID}" type="button" aria-label="pronounce"><span>&gt;</span></button><% end_if %>
-    $Term
+    $Content
 </span>
 <% if $LinkToAudioFile %>
     <audio id="audiodef-player-{$ID}" crossorigin="anonymous">

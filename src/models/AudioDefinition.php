@@ -197,4 +197,19 @@ class AudioDefinition extends DataObject
 
         return $lang;
     }
+
+    /**
+     * Return the list of text definitions that could be displayed
+     * if the template allows for it.
+     *
+     * @return DataList
+     */
+    public function getDefinitionsToDisplay()
+    {
+        $definitions = $this->Definitions()->filter('Displayed', true);
+
+        $this->extend('updateDefinitionsToDisplay', $definitions);
+
+        return $definitions;
+    }
 }
