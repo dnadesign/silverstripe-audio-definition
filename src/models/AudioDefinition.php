@@ -3,10 +3,9 @@
 namespace DNADesign\AudioDefinition\Models;
 
 use DNADesign\AudioDefinition\Models\TextDefinition;
+use DNADesign\AudioDefinition\Services\MaoriTranslationService;
 use Exception;
 use Psr\Log\LoggerInterface;
-use Services\MaoriTranslationService;
-use Services\TranslationService;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
@@ -75,7 +74,7 @@ class AudioDefinition extends DataObject
                     $config->addComponent(new GridFieldSortableRows('Sort'));
                 }
 
-                $fields->removeBYName('Definitions');
+                $fields->removeByName('Definitions');
                 $fields->addFieldToTab('Root.Main', $definitions);
             }
         }
@@ -121,7 +120,10 @@ class AudioDefinition extends DataObject
             $sources = $this->config()->get('sources');
             if ($sources && is_array($sources) && isset($sources[$this->Language])) {
                 $class = $sources[$this->Language];
-                return new $class();
+                $service = new $class();
+                if ($service->enabled()) {
+                    return $service;
+                }
             }
         }
 
@@ -175,5 +177,24 @@ class AudioDefinition extends DataObject
                 }
             }
         }
+    }
+
+    /**
+     * Return the language as a string valid for the html lang attribute
+     *
+     * @return string
+     */
+    public function getLangAttr()
+    {
+        $lang = '';
+
+        $language = $this->Language;
+        if ($language) {
+            $lang = substr($language, 0, 2);
+        }
+
+        $this->extend('updateLangAttribute', $lang);
+
+        return $lang;
     }
 }

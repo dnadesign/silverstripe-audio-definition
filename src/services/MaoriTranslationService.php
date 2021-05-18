@@ -15,8 +15,25 @@ class MaoriTranslationService implements TranslationService
 
     private static $api_url = 'https://maoridictionary.co.nz/api/1.1/search/';
 
-    private static $api_key = 'uspY2VRCc2394uGb';
+    private static $api_key;
 
+    /**
+     * Check that we have an API key
+     *
+     * @return boolean
+     */
+    public function enabled(): bool
+    {
+        return !empty($this->config()->get('api_key'));
+    }
+
+    /**
+     * Queries the service to retrieve the information
+     * related to the keywords
+     *
+     * @param string $wordOrSentence
+     * @return array
+     */
     public function getDefinitionAndAudio($wordOrSentence): array
     {
         $uri = self::get_search_url(strtolower($wordOrSentence));

@@ -12,4 +12,10 @@ interface TranslationService
      * @return array
      */
     public function getDefinitionAndAudio($wordOrSentence): array;
+
+    /**
+     * Return whether a service is ready to be used
+     * eg: in case it needs an api key, check that it is supplied
+     */
+    public function enabled(): bool;
 }
