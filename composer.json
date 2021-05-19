@@ -16,5 +16,10 @@
   "require": {
       "silverstripe/vendor-plugin": "^1.0",
       "silverstripe/framework": "^4.0"
+  },
+  "extra": {
+    "expose": [
+        "client"
+    ]
   }
 }
