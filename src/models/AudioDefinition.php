@@ -41,6 +41,7 @@ class AudioDefinition extends DataObject
     ];
 
     private static $summary_fields = [
+        'ID' => 'ID',
         'Term' => 'Term',
         'getLanguageName' => 'Language',
         'Definitions.Count' => 'Definitions #'
