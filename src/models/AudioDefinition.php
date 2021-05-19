@@ -9,8 +9,11 @@ use Psr\Log\LoggerInterface;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\ORM\FieldType\DBText;
 use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
 
 class AudioDefinition extends DataObject
@@ -23,7 +26,7 @@ class AudioDefinition extends DataObject
 
     private static $db = [
         'Term' => 'Varchar(100)',
-        'Language' => 'Varchar(10)',
+        'Locale' => 'Varchar(10)',
         'LinkToAudioFile' => 'Varchar(255)',
         'FetchedFromService' => 'Datetime'
     ];
@@ -33,12 +36,12 @@ class AudioDefinition extends DataObject
     ];
 
     private static $defaults = [
-        'Language' => 'mi_NZ'
+        'Locale' => 'mi_NZ'
     ];
 
     private static $summary_fields = [
         'Term' => 'Term',
-        'Language' => 'Language',
+        'getLanguageName' => 'Language',
         'Definitions.Count' => 'Definitions #'
     ];
 
@@ -49,8 +52,8 @@ class AudioDefinition extends DataObject
         $fields = parent::getCMSFields();
 
         // Language
-        $language = DropdownField::create('Language', 'Language', $this->getLanguageOptions());
-        $fields->replaceField('Language', $language);
+        $language = DropdownField::create('Locale', 'Language', $this->getLanguageOptions());
+        $fields->replaceField('Locale', $language);
 
         // LinkToAudioFile
         $audio = $fields->dataFieldByName('LinkToAudioFile');
@@ -100,9 +103,12 @@ class AudioDefinition extends DataObject
      */
     public function getLanguageOptions()
     {
-        $options = [
-            'mi_NZ' => 'Te Reo Maori'
-        ];
+        $options = [];
+
+        $sources = array_keys($this->config()->get('sources'));
+        foreach ($sources as $locale) {
+            $options[$locale] =  \Locale::getDisplayLanguage($locale, i18n::get_locale());
+        }
 
         $this->extend('updateLanguageOptions', $options);
 
@@ -116,10 +122,10 @@ class AudioDefinition extends DataObject
      */
     public function getSourceService()
     {
-        if ($this->Language) {
+        if ($this->Locale) {
             $sources = $this->config()->get('sources');
-            if ($sources && is_array($sources) && isset($sources[$this->Language])) {
-                $class = $sources[$this->Language];
+            if ($sources && is_array($sources) && isset($sources[$this->Locale])) {
+                $class = $sources[$this->Locale];
                 $service = new $class();
                 if ($service->enabled()) {
                     return $service;
@@ -139,7 +145,7 @@ class AudioDefinition extends DataObject
     {
         parent::onAfterWrite();
 
-        if ($this->Language && trim($this->Term) && !$this->FetchedFromService) {
+        if ($this->Locale && trim($this->Term) && !$this->FetchedFromService) {
             $source = $this->getSourceService();
             if ($source) {
                 try {
@@ -157,8 +163,8 @@ class AudioDefinition extends DataObject
                                 if ($exists === false && isset($definition['content'])) {
                                     $defObject = new TextDefinition();
                                     $defObject->UID = isset($definition['id']) ? $definition['id'] : null;
-                                    $defObject->Content = $definition['content'];
-                                    $defObject->Type = isset($definition['type']) ? $definition['type'] : null;
+                                    $defObject->Content = ucfirst($definition['content']);
+                                    $defObject->Type = isset($definition['type']) ? ucfirst($definition['type']) : null;
                                     $defObject->AudioDefinitionID = $this->ID;
                                     $defObject->write();
                                 }
@@ -188,7 +194,7 @@ class AudioDefinition extends DataObject
     {
         $lang = '';
 
-        $language = $this->Language;
+        $language = $this->Locale;
         if ($language) {
             $lang = substr($language, 0, 2);
         }
@@ -211,5 +217,15 @@ class AudioDefinition extends DataObject
         $this->extend('updateDefinitionsToDisplay', $definitions);
 
         return $definitions;
+    }
+
+    /**
+     * Return the language as a readable string
+     *
+     * @return void
+     */
+    public function getLanguageName()
+    {
+        return DBField::create_field(DBText::class, \Locale::getDisplayLanguage($this->Locale, i18n::get_locale()));
     }
 }
