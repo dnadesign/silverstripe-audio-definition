@@ -1,0 +1,8 @@
+---
+Name: audiodefinitionconfig
+---
+SilverStripe\Core\Injector\Injector:
+  Psr\SimpleCache\CacheInterface.audioDefinitionCache:
+    factory: SilverStripe\Core\Cache\CacheFactory
+    constructor:
+      namespace: "audioDefinitionCache"

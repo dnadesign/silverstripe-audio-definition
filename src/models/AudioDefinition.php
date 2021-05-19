@@ -6,6 +6,7 @@ use DNADesign\AudioDefinition\Models\TextDefinition;
 use DNADesign\AudioDefinition\Services\MaoriTranslationService;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
@@ -227,5 +228,46 @@ class AudioDefinition extends DataObject
     public function getLanguageName()
     {
         return DBField::create_field(DBText::class, \Locale::getDisplayLanguage($this->Locale, i18n::get_locale()));
+    }
+
+    /**
+     * Produce the json used by TinyMCE to populate the list of words
+     * than can be used in order to link to ta definition
+     *
+     * @return json
+     */
+    public static function getOptionsForCmsSelector()
+    {
+        $definitions = static::get();
+
+        $cacheKey = implode('.', [
+            $definitions->count(),
+            strtotime($definitions->max('LastEdited'))
+        ]);
+
+        // Attempt to load from cache
+        $cache = Injector::inst()->get(CacheInterface::class . '.audioDefinitionCache');
+
+        $options = ($cache->has($cacheKey)) ? $cache->get($cacheKey) : [];
+
+        // If no options have been cached, then create the json
+        if (empty($options)) {
+            if ($definitions->count() > 0) {
+                $options = [
+                    ['value' => 0, 'text' => 'Select a word']
+                ];
+        
+                foreach ($definitions as $desc) {
+                    $options[] = ['value' => $desc->ID, 'text' => $desc->Term];
+                }
+            }
+
+            $options = json_encode($options);
+    
+            // set a value and save it via the adapter
+            $cache->set($cacheKey, $options);
+        }
+        
+        return $options;
     }
 }

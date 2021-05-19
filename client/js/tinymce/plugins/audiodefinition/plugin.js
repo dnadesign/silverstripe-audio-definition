@@ -81,7 +81,7 @@
       define(id, [], function () { return ref; });
     };
     /*jsc
-    ["tinymce.plugins.anchor.Plugin","tinymce.core.Env","tinymce.core.PluginManager","global!tinymce.util.Tools.resolve"]
+    ["tinymce.plugins.audiodef.Plugin","tinymce.core.Env","tinymce.core.PluginManager","global!tinymce.util.Tools.resolve"]
     jsc*/
     defineGlobal("global!tinymce.util.Tools.resolve", tinymce.util.Tools.resolve);
     /**
@@ -135,13 +135,13 @@
      */
     
     /**
-     * This class contains all core logic for the anchor plugin.
+     * This class contains all core logic for the audiodef plugin.
      *
-     * @class tinymce.anchor.Plugin
+     * @class tinymce.audiodef.Plugin
      * @private
      */
     define(
-      'tinymce.plugins.anchor.Plugin',
+      'tinymce.plugins.audiodef.Plugin',
       [
         'tinymce.core.Env',
         'tinymce.core.PluginManager'
@@ -149,17 +149,37 @@
     
       function (Env, PluginManager) {
         PluginManager.add('audiodef', function (editor) {
+          var options = window.audioDefinitionOptions;
+
           var showDialog = function () {
-            var selectedNode = editor.selection.getNode();
+            var selectedWords = editor.selection.getContent();
+
+            // Don't open the dialogue if there are no options or no word has been selected
+            if (!selectedWords || options.length < 1) return;
             
             editor.windowManager.open({
-              title: 'Audio Definition',
-              body: { type: 'textbox', name: 'id', size: 40, label: 'Id', value: value },
+              title: 'Insert Audio Definition',
+              body: [{ 
+                type: 'listbox',
+                name: 'wordid',
+                label: 'Word',
+                size: 'large',
+                minWidth: 300,
+                values: options,
+                onPostRender: function () {
+                  // If we have selected words, we can try to match them to the options
+                  // and preselect the option
+                  const match = options.find(option => {
+                    return option.text.trim().toLowerCase() === selectedWords.trim().toLowerCase();
+                  });
+                  if (match) {
+                    this.value(match.value);
+                  }
+                }
+              }],
               onsubmit: function (e) {
-                var id = e.data.id;
-                editor.execCommand('mceInsertContent', false, editor.dom.createHTML('a', {
-                    id: id
-                  }));
+                var shortcode = `[audiodef id='${e.data.wordid}']${selectedWords}[/audiodef]`;
+                editor.execCommand('mceInsertContent', false, shortcode);
               }
             });
           };
@@ -167,21 +187,16 @@
           editor.addCommand('mceAudiodef', showDialog);
     
           editor.addButton('audiodef', {
-            icon: 'comment-add',
+            type: 'button',
+            icon: 'translate',
             tooltip: 'Audio Definition',
-            onclick: showDialog
-          });
-    
-          editor.addMenuItem('audiodef', {
-            icon: 'comment-add',
-            text: 'Audio Definition',
-            context: 'insert',
-            onclick: showDialog
+            onclick: showDialog,
+            disabled: options.length < 1
           });
         });
     
         return function () { };
       }
     );
-    dem('tinymce.plugins.anchor.Plugin')();
+    dem('tinymce.plugins.audiodef.Plugin')();
 })();
