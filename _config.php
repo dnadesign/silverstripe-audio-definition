@@ -4,6 +4,7 @@ use DNADesign\AudioDefinition\Models\AudioDefinition;
 use DNADesign\AudioDefinition\Shortcodes\AudioDefinitionShortcodeProvider;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
+use SilverStripe\ORM\DB;
 use SilverStripe\View\Parsers\ShortcodeParser;
 use SilverStripe\View\Requirements;
 
@@ -17,8 +18,12 @@ call_user_func(function () {
         ])
        ->addButtonsToLine(2, 'audiodef');
        
-    // Add options for the wysiwyg selector
-    Requirements::customScript(sprintf('var audioDefinitionOptions = %s', AudioDefinition::getOptionsForCmsSelector()));
+    // Make sure AudioDefinition table exists before requiring
+    // otherwise it will break dev/build
+    if (in_array(AudioDefinition::config()->get('table_name'), DB::table_list())) {
+        // Add options for the wysiwyg selector
+        Requirements::customScript(sprintf('var audioDefinitionOptions = %s', AudioDefinition::getOptionsForCmsSelector()));
+    }
 });
 
 ShortcodeParser::get('default')
