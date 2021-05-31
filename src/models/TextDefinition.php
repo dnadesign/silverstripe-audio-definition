@@ -45,4 +45,28 @@ class TextDefinition extends DataObject
         
         return $fields;
     }
+
+    /**
+     * Permissions
+     */
+
+    public function canView($member = null)
+    {
+        return AudioDefinition::singleton()->canView($member);
+    }
+
+    public function canCreate($member = null, $context = [])
+    {
+        return AudioDefinition::singleton()->canCreate($member, $context);
+    }
+
+    public function canEdit($member = null)
+    {
+        return AudioDefinition::singleton()->canEdit($member);
+    }
+
+    public function canDelete($member = null)
+    {
+        return AudioDefinition::singleton()->canDelete($member);
+    }
 }

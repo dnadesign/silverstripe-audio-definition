@@ -10,14 +10,17 @@ use Psr\SimpleCache\CacheInterface;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBText;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\PermissionProvider;
 use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
 
-class AudioDefinition extends DataObject
+class AudioDefinition extends DataObject implements PermissionProvider
 {
     private static $table_name = 'AudioDefinition';
 
@@ -51,40 +54,47 @@ class AudioDefinition extends DataObject
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
+        $this->beforeUpdateCMSFields(function ($fields) {
+            // Language
+            $language = DropdownField::create('Locale', 'Language', $this->getLanguageOptions());
+            $fields->replaceField('Locale', $language);
 
-        // Language
-        $language = DropdownField::create('Locale', 'Language', $this->getLanguageOptions());
-        $fields->replaceField('Locale', $language);
-
-        // LinkToAudioFile
-        $audio = $fields->dataFieldByName('LinkToAudioFile');
-        if ($audio) {
-            $audio->setReadonly(true);
-        }
-
-        // FetchedFromService
-        $fetched = $fields->dataFieldByName('FetchedFromService');
-        if ($fetched) {
-            $fetched->setReadonly(true);
-        }
-
-        // Definitions
-        if ($this->IsInDB()) {
-            $definitions = $fields->dataFieldByName('Definitions');
-            if ($definitions) {
-                $config = $definitions->getConfig();
-                if ($config) {
-                    $config->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
-                    $config->addComponent(new GridFieldSortableRows('Sort'));
-                }
-
-                $fields->removeByName('Definitions');
-                $fields->addFieldToTab('Root.Main', $definitions);
+            // LinkToAudioFile
+            $audio = $fields->dataFieldByName('LinkToAudioFile');
+            if ($audio) {
+                $audio->setReadonly(true);
             }
-        }
 
-        return $fields;
+            // FetchedFromService
+            $fetched = $fields->dataFieldByName('FetchedFromService');
+            if ($fetched) {
+                $fetched->setReadonly(true);
+                // Remove default description from DateTimeField
+                $fetched->setDescription('');
+            }
+
+            // Definitions
+            if ($this->IsInDB()) {
+                $definitions = $fields->dataFieldByName('Definitions');
+                if ($definitions) {
+                    $config = $definitions->getConfig();
+                    if ($config) {
+                        $config->addComponent(new GridFieldSortableRows('Sort'));
+                        // Delete text definition rather than unlinking them
+                        $config->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
+                        $delete = $config->getComponentByType(GridFieldDeleteAction::class);
+                        if ($delete) {
+                            $delete->setRemoveRelation(false);
+                        }
+                    }
+
+                    $fields->removeByName('Definitions');
+                    $fields->addFieldToTab('Root.Main', $definitions);
+                }
+            }
+        });
+
+        return parent::getCMSFields();
     }
 
     /**
@@ -270,5 +280,74 @@ class AudioDefinition extends DataObject
         }
         
         return $options;
+    }
+
+    /**
+     * Permissions
+     */
+    public function canView($member = false)
+    {
+        return Permission::check('VIEW_DEFINITION');
+    }
+
+    public function canCreate($member = null, $context = [])
+    {
+        return Permission::check('CREATE_DEFINITION');
+    }
+
+    public function canEdit($member = false)
+    {
+        return Permission::check('EDIT_DEFINITION');
+    }
+
+    public function canDelete($member = false)
+    {
+        return Permission::check('DELETE_DEFINITION');
+    }
+
+    public function providePermissions()
+    {
+        return [
+            'VIEW_DEFINITION' => array(
+                'name' => _t(
+                    __CLASS__ . '.ViewDefinition',
+                    'View Audio Definitions'
+                ),
+                'category' => _t(
+                    __CLASS__ . '.Category',
+                    'Audio Definition'
+                )
+            ),
+            'CREATE_DEFINITION' => array(
+                'name' => _t(
+                    __CLASS__ . '.CreateDefinition',
+                    'Create Audio Definitions'
+                ),
+                'category' => _t(
+                    __CLASS__ . '.Category',
+                    'Audio Definition'
+                )
+            ),
+            'EDIT_DEFINITION' => array(
+                'name' => _t(
+                    __CLASS__ . '.EditDefinition',
+                    'Edit Audio Definitions'
+                ),
+                'category' => _t(
+                    __CLASS__ . '.Category',
+                    'Audio Definition'
+                )
+            ),
+            'DELETE_DEFINITION' => array(
+                'name' => _t(
+                    __CLASS__ . '.DeleteDefinition',
+                    'Delete Audio Definitions'
+                ),
+                'category' => _t(
+                    __CLASS__ . '.Category',
+                    'Audio Definition'
+                )
+            )
+        ];
     }
 }
