@@ -1,0 +1,6 @@
+.shortcode--audiodef {
+    display: inline-block;
+    padding: 3px 5px 0px 17px;
+    background: url('../icons/audiodef-icon.svg') no-repeat 2px center #e9f0f4;
+    background-size: 12px 12px;
+}

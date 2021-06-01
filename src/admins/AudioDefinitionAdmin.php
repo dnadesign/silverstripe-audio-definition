@@ -14,4 +14,6 @@ class AudioDefinitionAdmin extends ModelAdmin
     private static $url_segment = 'audio-definitions';
 
     private static $menu_title = 'Audio Definition';
+
+    private static $menu_icon = 'dnadesign/silverstripe-audio-definition:client/icons/audiodef-icon.svg';
 }

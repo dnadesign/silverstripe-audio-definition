@@ -178,7 +178,7 @@
                 }
               }],
               onsubmit: function (e) {
-                var shortcode = `[audiodef id='${e.data.wordid}']${selectedWords}[/audiodef]`;
+                var shortcode = `<span class="shortcode shortcode--audiodef">[audiodef id='${e.data.wordid}']${selectedWords}[/audiodef]</span>`;
                 editor.execCommand('mceInsertContent', false, shortcode);
               }
             });
