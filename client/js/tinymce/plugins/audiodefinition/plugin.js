@@ -178,8 +178,21 @@
                 }
               }],
               onsubmit: function (e) {
-                var shortcode = `<span class="shortcode shortcode--audiodef">[audiodef id='${e.data.wordid}']${selectedWords}[/audiodef]</span>`;
+                var shortcode = `<span class="shortcode shortcode--audiodef">[audiodef id='${e.data.wordid}']${selectedWords}[/audiodef]</span>&nbsp;`;
                 editor.execCommand('mceInsertContent', false, shortcode);
+              }
+            });
+          };
+
+          // When user double click on the shortcode
+          // Select the span, so if user hits delete, it will remove everything
+          // TODO: open dialog to change the word.
+          var setupClickListener = function (editor) {
+            editor.on('dblclick', function (e) {
+              var range = editor.selection.getRng();
+              var span = range.startContainer.parentNode;
+              if (span && span.classList.contains('shortcode--audiodef')) {
+                editor.selection.select(span);
               }
             });
           };
@@ -193,6 +206,8 @@
             onclick: showDialog,
             disabled: options.length < 1
           });
+
+          setupClickListener(editor);
         });
     
         return function () { };
