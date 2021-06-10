@@ -3,6 +3,8 @@
 namespace DNADesign\AudioDefinition\Models;
 
 use DNADesign\AudioDefinition\Models\AudioDefinition;
+use SilverStripe\Forms\CompositeValidator;
+use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\DataObject;
 
 class TextDefinition extends DataObject
@@ -21,10 +23,6 @@ class TextDefinition extends DataObject
         'AudioDefinition' => AudioDefinition::class
     ];
 
-    private static $defaults = [
-        'Displayed' => true
-    ];
-
     private static $default_sort = 'Sort ASC';
 
     private static $summary_fields = [
@@ -39,11 +37,26 @@ class TextDefinition extends DataObject
         $fields = parent::getCMSFields();
 
         $fields->removeByName([
+            'UID',
             'Sort',
             'AudioDefinitionID'
         ]);
         
         return $fields;
+    }
+
+    /**
+     * Require Content and Type as a definition would not make sense without them
+     *
+     * @return CompositeValidator
+     */
+    public function getCMSCompositeValidator(): CompositeValidator
+    {
+        $compositeValidator = parent::getCMSCompositeValidator();
+
+        $compositeValidator->addValidator(RequiredFields::create(['Content', 'Type']));
+    
+        return $compositeValidator;
     }
 
     /**
