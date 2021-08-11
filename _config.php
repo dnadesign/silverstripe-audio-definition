@@ -1,6 +1,9 @@
 <?php
 
+use DNADesign\AudioDefinition\Extensions\AudioDefinition_ContextExtension;
+use DNADesign\AudioDefinition\Extensions\TextDefinition_ContextExtension;
 use DNADesign\AudioDefinition\Models\AudioDefinition;
+use DNADesign\AudioDefinition\Models\TextDefinition;
 use DNADesign\AudioDefinition\Shortcodes\AudioDefinitionShortcodeProvider;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
@@ -28,3 +31,11 @@ call_user_func(function () {
 
 ShortcodeParser::get('default')
     ->register('audiodef', [AudioDefinitionShortcodeProvider::class, 'handle_shortcode']);
+
+/**
+ * Add necessary extension to allow user to manage text definition context
+ */
+if (TextDefinition::contexts_in_use()) {
+    TextDefinition::add_extension(TextDefinition_ContextExtension::class);
+    AudioDefinition::add_extension(AudioDefinition_ContextExtension::class);
+}

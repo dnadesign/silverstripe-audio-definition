@@ -222,11 +222,11 @@ class AudioDefinition extends DataObject implements PermissionProvider
      *
      * @return DataList
      */
-    public function getDefinitionsToDisplay()
+    public function getDefinitionsToDisplay($args = null)
     {
-        $definitions = $this->Definitions()->filter('Displayed', true);
+        $definitions = $this->Definitions();
 
-        $this->extend('updateDefinitionsToDisplay', $definitions);
+        $this->extend('updateDefinitionsToDisplay', $definitions, $args);
 
         return $definitions;
     }

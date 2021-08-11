@@ -3,7 +3,6 @@
 namespace DNADesign\AudioDefinition\Shortcodes;
 
 use DNADesign\AudioDefinition\Models\AudioDefinition;
-use SilverStripe\View\HTML;
 use SilverStripe\View\Parsers\ShortcodeHandler;
 
 class AudioDefinitionShortcodeProvider implements ShortcodeHandler
@@ -30,7 +29,10 @@ class AudioDefinitionShortcodeProvider implements ShortcodeHandler
         }
 
         $result = $audioDefinition
-                    ->customise(['Content' => $content])
+                    ->customise([
+                        'Content' => $content,
+                        'DefinitionsToDisplay' => $audioDefinition->getDefinitionsToDisplay($arguments)
+                    ])
                     ->renderWith('DNADesign\\AudioDefinition\\AudioDefinition');
 
         return $result;

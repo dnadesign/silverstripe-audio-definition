@@ -11,11 +11,21 @@ class TextDefinition extends DataObject
 {
     private static $table_name = 'TextDefinition';
 
+    /**
+     * Some language may have different definitions for the same word
+     * depending on context. Switch this config to true to allow
+     * tagging text definition with contexts for later filtering.
+     * Set array per locale eg:
+     * [mi_NZ => true, en_NZ => false]
+     *
+     * @var array
+     */
+    private static $use_context_for_locales = [];
+
     private static $db = [
         'UID' => 'Varchar(100)',
         'Content' => 'Text',
         'Type' => 'Varchar(50)',
-        'Displayed' => 'Boolean',
         'Sort' => 'Int'
     ];
 
@@ -28,8 +38,7 @@ class TextDefinition extends DataObject
     private static $summary_fields = [
         'UID' => 'UID',
         'Content' => 'Definition',
-        'Type' => 'Type',
-        'Displayed.Nice' => 'Displayed'
+        'Type' => 'Type'
     ];
 
     public function getCMSFields()
@@ -81,5 +90,51 @@ class TextDefinition extends DataObject
     public function canDelete($member = null)
     {
         return AudioDefinition::singleton()->canDelete($member);
+    }
+
+    /**
+     * Return whether this text definition can have contexts.
+     * Its parent Audio Definition need to be a locale present in
+     *
+     * @return boolean
+     */
+    public function requireContext()
+    {
+        $use = static::config()->get('use_context_for_locales');
+        if (!$use || empty($use)) {
+            return false;
+        }
+
+        $definition = $this->AudioDefinition();
+        if ($definition) {
+            $locale = $definition->Locale;
+            if ($locale) {
+                return in_array($locale, $use);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if at least one locale requires contexts to be added to text definitions
+     *
+     * @return boolean
+     */
+    public static function contexts_in_use()
+    {
+        $use = static::config()->get('use_context_for_locales');
+        if (!$use || empty($use)) {
+            return false;
+        }
+
+        // Check that there is a sources available for the locale for which the context should be used
+        $sources = AudioDefinition::config()->get('sources');
+        if ($sources && is_array($sources) && !empty($sources)) {
+            $locales = array_intersect(array_values($use), array_keys($sources));
+            return count($locales) > 0;
+        }
+
+        return false;
     }
 }
