@@ -151,6 +151,37 @@
         PluginManager.add('audiodef', function (editor) {
           var options = window.audioDefinitionOptions;
 
+          var dialogBody = [{ 
+            type: 'listbox',
+            name: 'id',
+            label: 'Word',
+            size: 'large',
+            minWidth: 300,
+            values: options,
+            onPostRender: function () {
+              var selectedWords = editor.selection.getContent();
+              // If we have selected words, we can try to match them to the options
+              // and preselect the option
+              const match = options.find(option => {
+                return option.text.trim().toLowerCase() === selectedWords.trim().toLowerCase();
+              });
+              if (match) {
+                this.value(match.value);
+              }
+            }
+          }];
+
+          // If an array with additional field config is provided
+          // add them to the dialog body
+          if (window.audioDefinitionsAdditionalFields) {
+            var additionalFields = window.audioDefinitionsAdditionalFields;
+            if (additionalFields) {
+              additionalFields.forEach(field => {
+                dialogBody.push(field);
+              });
+            }
+          }
+
           var showDialog = function () {
             var selectedWords = editor.selection.getContent();
 
@@ -159,26 +190,15 @@
             
             editor.windowManager.open({
               title: 'Insert Audio Definition',
-              body: [{ 
-                type: 'listbox',
-                name: 'wordid',
-                label: 'Word',
-                size: 'large',
-                minWidth: 300,
-                values: options,
-                onPostRender: function () {
-                  // If we have selected words, we can try to match them to the options
-                  // and preselect the option
-                  const match = options.find(option => {
-                    return option.text.trim().toLowerCase() === selectedWords.trim().toLowerCase();
-                  });
-                  if (match) {
-                    this.value(match.value);
-                  }
-                }
-              }],
+              body: dialogBody,
               onsubmit: function (e) {
-                var shortcode = `<span class="shortcode shortcode--audiodef">[audiodef id='${e.data.wordid}']${selectedWords}[/audiodef]</span>&nbsp;`;
+                var params = [];
+                dialogBody.forEach((field) => {
+                  if (field.name && e.data[field.name]) {
+                    params.push(`${field.name}='${e.data[field.name]}'`);
+                  }
+                });
+                var shortcode = `<span class="shortcode shortcode--audiodef">[audiodef ${params.join(' ')}]${selectedWords}[/audiodef]</span>&nbsp;`;
                 editor.execCommand('mceInsertContent', false, shortcode);
               }
             });

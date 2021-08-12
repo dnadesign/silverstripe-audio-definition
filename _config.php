@@ -24,18 +24,16 @@ call_user_func(function () {
     // Make sure AudioDefinition table exists before requiring
     // otherwise it will break dev/build
     if (in_array(AudioDefinition::config()->get('table_name'), DB::table_list())) {
+        // Add necessary extension to allow user to manage text definition context
+        if (TextDefinition::contexts_in_use()) {
+            TextDefinition::add_extension(TextDefinition_ContextExtension::class);
+            AudioDefinition::add_extension(AudioDefinition_ContextExtension::class);
+        }
         // Add options for the wysiwyg selector
         Requirements::customScript(sprintf('var audioDefinitionOptions = %s', AudioDefinition::getOptionsForCmsSelector()));
+        Requirements::customScript(sprintf('var audioDefinitionsAdditionalFields = %s', AudioDefinition::getAdditionalCmsSelectorFields()));
     }
 });
-
+// Initiate Short Code
 ShortcodeParser::get('default')
     ->register('audiodef', [AudioDefinitionShortcodeProvider::class, 'handle_shortcode']);
-
-/**
- * Add necessary extension to allow user to manage text definition context
- */
-if (TextDefinition::contexts_in_use()) {
-    TextDefinition::add_extension(TextDefinition_ContextExtension::class);
-    AudioDefinition::add_extension(AudioDefinition_ContextExtension::class);
-}

@@ -73,8 +73,8 @@ class AudioDefinition extends DataObject implements PermissionProvider
                 $fetched->setDescription('');
             }
 
-            // Definitions
             if ($this->IsInDB()) {
+                // Definitions
                 $definitions = $fields->dataFieldByName('Definitions');
                 if ($definitions) {
                     $config = $definitions->getConfig();
@@ -273,6 +273,8 @@ class AudioDefinition extends DataObject implements PermissionProvider
                 }
             }
 
+            static::singleton()->extend('updateOptionsForCmsSelector', $options);
+
             $options = json_encode($options);
     
             // set a value and save it via the adapter
@@ -280,6 +282,21 @@ class AudioDefinition extends DataObject implements PermissionProvider
         }
         
         return $options;
+    }
+
+    /**
+     * This method allows to inject additional fields that will appear under the "word" selector
+     * when adding a definition in the wysiwyg. SeeTinyMCE docs for format.
+     *
+     * @return json
+     */
+    public static function getAdditionalCmsSelectorFields()
+    {
+        $fields = [];
+
+        static::singleton()->extend('updateAdditionalCmsSelectorFields', $fields);
+
+        return json_encode($fields);
     }
 
     /**

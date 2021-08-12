@@ -22,6 +22,31 @@ class TextDefinitionContext extends DataObject
     ];
 
     /**
+     * Return an array of all available context formatted to be used
+     * by the TinyMCE config
+     *
+     * @return array
+     */
+    public static function getOptionsForCmsSelector()
+    {
+        $contexts = static::get();
+
+        $options = [];
+
+        if ($contexts && $contexts->exists()) {
+            $options[] = ['value' => 0, 'text' => 'Select a context'];
+
+            foreach ($contexts as $context) {
+                $options[] =  ['value' => $context->ID, 'text' => $context->Name];
+            }
+        }
+
+        static::singleton()->extend('updateOptionsForCmsSelector', $options);
+
+        return $options;
+    }
+
+    /**
      * Permissions
      */
     public function canView($member = null)

@@ -27,4 +27,24 @@ class AudioDefinition_ContextExtension extends Extension
             }
         }
     }
+
+    /**
+     * Add the config necessary to add a dropdown to select a context
+     * from the wysiwyg
+     *
+     * @param array $fields
+     * @return void
+     */
+    public function updateAdditionalCmsSelectorFields(&$fields)
+    {
+        $contextField = [
+            'type' => 'listbox',
+            'name' => 'context',
+            'label' =>  'Context',
+            'size' => 'large',
+            'values' => TextDefinitionContext::getOptionsForCmsSelector()
+        ];
+
+        array_push($fields, $contextField);
+    }
 }
