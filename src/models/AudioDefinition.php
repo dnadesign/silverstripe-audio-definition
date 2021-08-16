@@ -4,6 +4,7 @@ namespace DNADesign\AudioDefinition\Models;
 
 use DNADesign\AudioDefinition\Models\TextDefinition;
 use DNADesign\AudioDefinition\Services\MaoriTranslationService;
+use DNADesign\AudioDefinition\Shortcodes\AudioDefinitionShortcodeProvider;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
@@ -11,6 +12,8 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
@@ -91,6 +94,11 @@ class AudioDefinition extends DataObject implements PermissionProvider
                     $fields->removeByName('Definitions');
                     $fields->addFieldToTab('Root.Main', $definitions);
                 }
+
+                // Signatures
+                $list = sprintf('<div class="field">%s</div>', implode('<br/>', $this->getSignaturesList()));
+                $signatures = ToggleCompositeField::create('Signatures', 'Shortcodes Signatures', LiteralField::create('SignaturesList', $list));
+                $fields->addFieldToTab('Root.Main', $signatures);
             }
         });
 
@@ -337,6 +345,27 @@ class AudioDefinition extends DataObject implements PermissionProvider
         static::singleton()->extend('getByAlternateIdentifier', $definition, $identifier);
 
         return $definition;
+    }
+
+    /**
+     * Return an array of all the possible shortcode signature that can be used
+     * in a text area (in case they need to be manually added)
+     *
+     * @return array
+     */
+    public function getSignaturesList()
+    {
+        $list = [];
+
+        $codes = AudioDefinitionShortcodeProvider::get_shortcodes();
+        foreach ($codes as $code) {
+            $signature = sprintf('[%s id="%s"]%s[/%s]', $code, $this->ID, $this->Term, $code);
+            $list[] = $signature;
+        }
+
+        $this->extend('updateSignaturedList', $list, $codes);
+
+        return $list;
     }
 
     /**

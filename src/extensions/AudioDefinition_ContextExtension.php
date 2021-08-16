@@ -96,4 +96,30 @@ class AudioDefinition_ContextExtension extends Extension
             }
         }
     }
+
+    /**
+     * Update the list of short code that can be included in a text area
+     * with added contexts
+     *
+     * @param array $list
+     * @param  array $codes
+     * @return void
+     */
+    public function updateSignaturedList(&$list, $codes)
+    {
+        if (TextDefinition::contexts_in_use()) {
+            if ($this->owner->Definitions()->exists()) {
+                $contexts = TextDefinitionContext::get()->filter('Definitions.ID', $this->owner->Definitions()->column('ID'));
+                if ($contexts && $contexts->exists()) {
+                    $signatures = [];
+                    foreach ($contexts as $context) {
+                        foreach ($codes as $code) {
+                            $signatures[] = sprintf('<strong>%s</strong> [%s id="%s|%s"]%s[/%s]', $context->Name, $code, $this->owner->ID, $context->ID, $this->owner->Term, $code);
+                        }
+                    }
+                    $list = $signatures;
+                }
+            }
+        }
+    }
 }
