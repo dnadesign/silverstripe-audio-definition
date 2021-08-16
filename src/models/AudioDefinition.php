@@ -259,12 +259,12 @@ class AudioDefinition extends DataObject implements PermissionProvider
     {
         $definitions = static::get();
 
-        $cacheKey = static::singleton()->getCachekey();
+        $cacheKey = static::singleton()->getCacheKey();
 
         // Attempt to load from cache
         $cache = Injector::inst()->get(CacheInterface::class . '.audioDefinitionCache');
 
-        $options = []; //($cache->has($cacheKey)) ? $cache->get($cacheKey) : [];
+        $options = ($cache->has($cacheKey)) ? $cache->get($cacheKey) : [];
 
         // If no options have been cached, then create the json
         if (empty($options)) {
