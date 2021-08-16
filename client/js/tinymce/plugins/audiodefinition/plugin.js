@@ -163,7 +163,7 @@
               // If we have selected words, we can try to match them to the options
               // and preselect the option
               const match = options.find(option => {
-                return option.text.trim().toLowerCase() === selectedWords.trim().toLowerCase();
+                return option.text.trim().toLowerCase().includes(selectedWords.trim().toLowerCase());
               });
               if (match) {
                 this.value(match.value);

@@ -65,6 +65,22 @@ $data = [
 ]
 ```
 
+## Extensions
+
+### Context Extension
+Some languages can have multiple text definitions for the same word depending on the context.
+To tag different text definitions with keywords that depict a context, activate the context extension for the locale as follow:
+```
+DNADesign\AudioDefinition\Models\TextDefinition:
+  use_context_for_locales:
+    - mi_NZ
+```
+Once activated, users can create contexts in the Audio Definition > Contexts tab, then tag text definitions with one or more context.
+This won't have an influence on the way the definitions is displayed out-of-the-box, but if you implement a way of displaying the text definitions,
+then these can be filtered by context.
+
+Note: if at least one text definitions is tagged with a context, the wysiwyg dropdown will only give the choice of word with a context. If a word also required to display every definitions, then each definitions will need to be tagged with the "default" context.
+
 ## NOTES
 Icons made by [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect) from [www.flaticon.com](https://www.flaticon.com/)
 

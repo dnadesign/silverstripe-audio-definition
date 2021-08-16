@@ -19,11 +19,11 @@ class AudioDefinitionShortcodeProvider implements ShortcodeHandler
 
     public static function handle_shortcode($arguments, $content, $parser, $shortcode, $extra = [])
     {
-        if (!isset($arguments['id']) || !is_numeric($arguments['id'])) {
+        if (!isset($arguments['id'])) {
             return $content;
         }
 
-        $audioDefinition = AudioDefinition::get()->byID($arguments['id']);
+        $audioDefinition = AudioDefinition::getByIdentifier($arguments['id']);
         if (!$audioDefinition || !$audioDefinition->exists()) {
             return $content;
         }

@@ -251,15 +251,12 @@ class AudioDefinition extends DataObject implements PermissionProvider
     {
         $definitions = static::get();
 
-        $cacheKey = implode('.', [
-            $definitions->count(),
-            strtotime($definitions->max('LastEdited'))
-        ]);
+        $cacheKey = static::singleton()->getCachekey();
 
         // Attempt to load from cache
         $cache = Injector::inst()->get(CacheInterface::class . '.audioDefinitionCache');
 
-        $options = ($cache->has($cacheKey)) ? $cache->get($cacheKey) : [];
+        $options = []; //($cache->has($cacheKey)) ? $cache->get($cacheKey) : [];
 
         // If no options have been cached, then create the json
         if (empty($options)) {
@@ -285,6 +282,29 @@ class AudioDefinition extends DataObject implements PermissionProvider
     }
 
     /**
+     * Return a string reflecting a change in the AudioDefinition
+     * to be used for refreshing the cache when needed
+     *
+     * @return string
+     */
+    public function getCacheKey()
+    {
+        $audioDefinitions = static::get();
+        $textDefinitions = TextDefinition::get();
+
+        $params = [
+            $audioDefinitions->count(),
+            strtotime($audioDefinitions->max('LastEdited')),
+            $textDefinitions->count(),
+            strtotime($textDefinitions->max('LastEdited')),
+        ];
+
+        $this->extend('updateCacheKeyParams', $params);
+
+        return implode('.', $params);
+    }
+
+    /**
      * This method allows to inject additional fields that will appear under the "word" selector
      * when adding a definition in the wysiwyg. SeeTinyMCE docs for format.
      *
@@ -297,6 +317,26 @@ class AudioDefinition extends DataObject implements PermissionProvider
         static::singleton()->extend('updateAdditionalCmsSelectorFields', $fields);
 
         return json_encode($fields);
+    }
+
+    /**
+     * This method checks if the Audio Defintion is requested by ID (default behaviour)
+     * but gives the opportunity to extensions to find the objet with a different identifier pattern
+     *
+     * @param string|int $identifier
+     * @return AudioDefinition
+     */
+    public static function getByIdentifier($identifier)
+    {
+        $definition = null;
+
+        if (is_numeric($identifier)) {
+            $definition = static::get()->byID($identifier);
+        }
+
+        static::singleton()->extend('getByAlternateIdentifier', $definition, $identifier);
+
+        return $definition;
     }
 
     /**

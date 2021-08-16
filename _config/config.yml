@@ -10,3 +10,8 @@ SilverStripe\Core\Injector\Injector:
 SilverStripe\Forms\HTMLEditor\TinyMCEConfig:
   editor_css:
     - 'dnadesign/silverstripe-audio-definition:client/css/editor.css'
+
+DNADesign\AudioDefinition\Models\TextDefinitionContext:
+  default_records:
+    default:
+      Name: Default
