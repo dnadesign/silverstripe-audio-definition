@@ -16,6 +16,8 @@ interface TranslationService
     /**
      * Return whether a service is ready to be used
      * eg: in case it needs an api key, check that it is supplied
+     *
+     * @return boolean
      */
     public function enabled(): bool;
 }

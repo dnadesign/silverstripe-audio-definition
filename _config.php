@@ -27,7 +27,11 @@ call_user_func(function () {
         // Add necessary extension to allow user to manage text definition context
         if (TextDefinition::contexts_in_use()) {
             TextDefinition::add_extension(TextDefinition_ContextExtension::class);
-            AudioDefinition::add_extension(AudioDefinition_ContextExtension::class);
+            // Also check that the relational table exists otherwise it will break dev/build
+            // TODO: perhaps the table name can be figured out from the schema
+            if (in_array(TextDefinition::config()->get('table_name').'_Contexts', DB::table_list())) {
+                AudioDefinition::add_extension(AudioDefinition_ContextExtension::class);
+            }
         }
         // Add options for the wysiwyg selector
         Requirements::customScript(sprintf('var audioDefinitionOptions = %s', AudioDefinition::getOptionsForCmsSelector()));

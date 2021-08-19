@@ -21,7 +21,7 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBText;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
-use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 class AudioDefinition extends DataObject implements PermissionProvider
 {
@@ -64,7 +64,7 @@ class AudioDefinition extends DataObject implements PermissionProvider
 
             // LinkToAudioFile
             $audio = $fields->dataFieldByName('LinkToAudioFile');
-            if ($audio) {
+            if ($audio && $this->FetchedFromService) {
                 $audio->setReadonly(true);
             }
 
@@ -82,7 +82,7 @@ class AudioDefinition extends DataObject implements PermissionProvider
                 if ($definitions) {
                     $config = $definitions->getConfig();
                     if ($config) {
-                        $config->addComponent(new GridFieldSortableRows('Sort'));
+                        $config->addComponent(new GridFieldOrderableRows('Sort'));
                         // Delete text definition rather than unlinking them
                         $config->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
                         $delete = $config->getComponentByType(GridFieldDeleteAction::class);
@@ -328,7 +328,7 @@ class AudioDefinition extends DataObject implements PermissionProvider
     }
 
     /**
-     * This method checks if the Audio Defintion is requested by ID (default behaviour)
+     * This method checks if the Audio Definition is requested by ID (default behaviour)
      * but gives the opportunity to extensions to find the objet with a different identifier pattern
      *
      * @param string|int $identifier

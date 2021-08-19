@@ -81,6 +81,8 @@ then these can be filtered by context.
 
 Note: if at least one text definitions is tagged with a context, the wysiwyg dropdown will only give the choice of word with a context. If a word also required to display every definitions, then each definitions will need to be tagged with the "default" context.
 
+Note: if you add the context config before running dev/build after installing the module, you will need to run dev/build twice for all the tables to be created.
+
 ## NOTES
 Icons made by [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect) from [www.flaticon.com](https://www.flaticon.com/)
 
