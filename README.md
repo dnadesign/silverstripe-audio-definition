@@ -31,7 +31,7 @@ If no API is provided, you can add `Text Definitions` manually.
 ### Insert definitions in a content area
 
 This module adds a button to the default Silverstripe text editor (currently TinyMCE 4) allowing a user to insert a shortcode which renders the audio definition. 
-To add the shortcode, select the word you wish associate with the definition, click on the `audio defnintion` button and select the correct term. If the selected text matches any of the audio definition term, it will be selected by default.
+To add the shortcode, select the word you wish to associate with the definition, click on the `audio defnintion` button and select the correct term. If the selected text matches any of the audio definition term, it will be selected by default.
 
 ![](docs/en/_images/audio-definition-wysiwyg.jpeg)
 
