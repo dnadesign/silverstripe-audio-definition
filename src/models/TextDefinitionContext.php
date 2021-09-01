@@ -21,6 +21,17 @@ class TextDefinitionContext extends DataObject
         'Definitions' => TextDefinition::class
     ];
 
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+
+        // As we cannot create TextDefinition without an Audio Definition
+        // Remove the definitions tab to avoid confusion
+        $fields->removeByName('Definitions');
+
+        return $fields;
+    }
+
     /**
      * Return an array of all available context formatted to be used
      * by the TinyMCE config
