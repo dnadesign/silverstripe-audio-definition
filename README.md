@@ -43,6 +43,39 @@ In addition, if an audio file is supplied, a button will precede the word which 
 It is recommended that you override the `DNADesign\AudioDefinition\AudioDefinition` template to suit you needs.
 For instance, you could add the text definition in a tooltip displayed when a user hovers over the word.
 
+As an example, this is the markup you could use with [tippy.js](https://atomiks.github.io/tippyjs/)
+```
+<%-- Keep outer span for accessibility, aria-expanded will be added to it by tippy --%>
+<% if $DefinitionsToDisplay %>
+<span class="audiodef-wrapper">
+    <span tabindex="0" role="button" class="audio-definition-button" lang="$LangAttr" data-tooltip-trigger aria-expanded="false">$Content.RAW</span>
+    <span class="tooltip-template audiodef-tooltip" style="display: none;" data-tippy-theme="wreda-theme--light">
+        <button class="tooltip-close button-close" data-tooltip-close aria-label="close">$SVG('cross')</button>
+        <span class="audiodef-tooltip__title">
+            <% if $LinkToAudioFile %><button class="audiodef-trigger button-speaker" aria-controls="audiodef-player-{$ID}" type="button" aria-label="pronounce">$SVG('speaker')</button><% end_if %>
+            <dfn>$Term</dfn>
+        </span>
+        <% if $DefinitionsToDisplay %>
+            <% loop $DefinitionsToDisplay %>
+                <span class="audiodef-tooltip__definition">
+                    <span class="audiodef-tooltip__definition-content">$Content.RAW</span>
+                    <span class="audiodef-tooltip__definition-type">$Top.LanguageName | $Type</span>
+                </span>
+            <% end_loop %>
+        <% end_if %>
+    </span>
+<span>
+<%-- Keep audio player outside the tippy template as it gets duplicated --%>
+<% if $LinkToAudioFile %>
+    <audio id="audiodef-player-{$ID}" crossorigin="anonymous">
+        <source src="$LinkToAudioFile" type="audio/mpeg">
+    </audio>
+<% end_if %>
+<% else %>
+    $Content.RAW
+<% end_if %>
+```
+
 ### Add different languages/translators
 
 If you would like to add a different language to choose from when creating a definition, you can add a new locale to the AudioDefinition sources via the config:
