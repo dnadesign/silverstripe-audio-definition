@@ -198,7 +198,7 @@
                     params.push(`${field.name}='${e.data[field.name]}'`);
                   }
                 });
-                var shortcode = `<span class="shortcode shortcode--audiodef">[audiodef ${params.join(' ')}]${selectedWords}[/audiodef]</span>&ensp;`;
+                var shortcode = `<span class="shortcode shortcode--audiodef">[audiodef ${params.join(' ')}]${selectedWords}[/audiodef]</span>`;
                 editor.execCommand('mceInsertContent', false, shortcode);
               }
             });
