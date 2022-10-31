@@ -246,7 +246,8 @@ class AudioDefinition extends DataObject implements PermissionProvider
      */
     public function getLanguageName()
     {
-        return DBField::create_field(DBText::class, \Locale::getDisplayLanguage($this->Locale, i18n::get_locale()));
+        $locale = $this->Locale ? $this->Locale : '';
+        return DBField::create_field(DBText::class, \Locale::getDisplayLanguage($locale, i18n::get_locale()));
     }
 
     /**
