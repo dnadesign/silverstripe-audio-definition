@@ -303,9 +303,9 @@ class AudioDefinition extends DataObject implements PermissionProvider
 
         $params = [
             $audioDefinitions->count(),
-            strtotime($audioDefinitions->max('LastEdited')),
+            strtotime($audioDefinitions->max('LastEdited')?:''),
             $textDefinitions->count(),
-            strtotime($textDefinitions->max('LastEdited')),
+            strtotime($textDefinitions->max('LastEdited')?:''),
         ];
 
         $this->extend('updateCacheKeyParams', $params);
