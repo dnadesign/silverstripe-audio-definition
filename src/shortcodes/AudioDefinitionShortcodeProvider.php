@@ -31,7 +31,8 @@ class AudioDefinitionShortcodeProvider implements ShortcodeHandler
         $result = $audioDefinition
                     ->customise([
                         'Content' => $content,
-                        'DefinitionsToDisplay' => $audioDefinition->getDefinitionsToDisplay($arguments)
+                        'DefinitionsToDisplay' => $audioDefinition->getDefinitionsToDisplay($arguments),
+                        'JSON' =>  $audioDefinition->toJSON($arguments)
                     ])
                     ->renderWith('DNADesign\\AudioDefinition\\AudioDefinition');
 
