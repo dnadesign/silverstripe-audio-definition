@@ -271,11 +271,11 @@ class AudioDefinition extends DataObject implements PermissionProvider
         if (empty($options)) {
             if ($definitions->count() > 0) {
                 $options = [
-                    ['value' => 0, 'text' => 'Select a word']
+                    ['value' => "0", 'text' => 'Select a word']
                 ];
         
                 foreach ($definitions as $desc) {
-                    $options[] = ['value' => $desc->ID, 'text' => $desc->Term];
+                    $options[] = ['value' => "$desc->ID", 'text' => $desc->Term];
                 }
             }
 

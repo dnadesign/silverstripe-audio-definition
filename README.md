@@ -1,4 +1,4 @@
-# Keywords  text + audio definition for SilverStripe
+# Keywords text + audio definition for SilverStripe
 
 ## Introduction
 
@@ -6,8 +6,8 @@ This modules provides an interface to associate foreign words, within a content 
 
 ## Requirements
 
-* SilverStripe 4
-* maoridictionary.co.nz API key (if using the default Te Reo Maori API)
+- SilverStripe 5
+- maoridictionary.co.nz API key (if using the default Te Reo Maori API)
 
 ## Installation
 
@@ -30,7 +30,7 @@ If no API is provided, you can add `Text Definitions` manually.
 
 ### Insert definitions in a content area
 
-This module adds a button to the default Silverstripe text editor (currently TinyMCE 4) allowing a user to insert a shortcode which renders the audio definition. 
+This module adds a button to the default Silverstripe text editor (currently TinyMCE 6) allowing a user to insert a shortcode which renders the audio definition.
 To add the shortcode, select the word you wish to associate with the definition, click on the `audio defnintion` button and select the correct term. If the selected text matches any of the audio definition term, it will be selected by default.
 
 ![](docs/en/_images/audio-definition-wysiwyg.jpeg)
@@ -44,6 +44,7 @@ It is recommended that you override the `DNADesign\AudioDefinition\AudioDefiniti
 For instance, you could add the text definition in a tooltip displayed when a user hovers over the word.
 
 As an example, this is the markup you could use with [tippy.js](https://atomiks.github.io/tippyjs/)
+
 ```
 <%-- Keep outer span for accessibility, aria-expanded will be added to it by tippy --%>
 <% if $DefinitionsToDisplay %>
@@ -79,12 +80,15 @@ As an example, this is the markup you could use with [tippy.js](https://atomiks.
 ### Add different languages/translators
 
 If you would like to add a different language to choose from when creating a definition, you can add a new locale to the AudioDefinition sources via the config:
+
 ```
 DNADesign\AudioDefinition\Models\AudioDefinition:
   sources:
     es_ES: 'SpanishTranslationServiceClass'
 ```
+
 A translation service is optional. If you choose to use one, you can create a new service which must implement `DNADesign\AudioDefinition\Services`. This class must define a method `getDefinitionAndAudio` which returns an array that must contain:
+
 ```
 $data = [
     'audioSrc' => 'Link to audio file',
@@ -101,13 +105,16 @@ $data = [
 ## Extensions
 
 ### Context Extension
+
 Some languages can have multiple text definitions for the same word depending on the context.
 To tag different text definitions with keywords that depict a context, activate the context extension for the locale as follows:
+
 ```
 DNADesign\AudioDefinition\Models\TextDefinition:
   use_context_for_locales:
     - mi_NZ
 ```
+
 Once activated, users can create contexts in the Audio Definition > Contexts tab, then tag text definitions with one or more contexts.
 This won't have an influence on the way the definitions are displayed out-of-the-box, but if you implement a way of displaying the text definitions, then these can be filtered by context.
 
@@ -116,5 +123,5 @@ This won't have an influence on the way the definitions are displayed out-of-the
 **Note**: if you add the context config before running dev/build after installing the module, you will need to run dev/build twice for all the tables to be created.
 
 ## NOTES
-Icons made by [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect) from [www.flaticon.com](https://www.flaticon.com/)
 
+Icons made by [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect) from [www.flaticon.com](https://www.flaticon.com/)
