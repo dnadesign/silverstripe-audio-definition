@@ -168,7 +168,7 @@
             .includes(selectedWords.trim().toLowerCase());
         });
 
-        const selectedId = match?.id ?? '0';
+        const selectedId = match?.value ?? '0';
 
         editor.windowManager.open({
           title: 'Insert Audio Definition',
