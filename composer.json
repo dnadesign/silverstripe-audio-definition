@@ -14,10 +14,10 @@
     "email": "alexandre.saelens@dna.co.nz"
   }],
   "require": {
-      "silverstripe/vendor-plugin": "^1.0",
-      "silverstripe/framework": "^4.0",
+      "silverstripe/vendor-plugin": "^2.0",
+      "silverstripe/framework": "^5.0",
       "guzzlehttp/guzzle": "^6.3|^7",
-      "symbiote/silverstripe-gridfieldextensions": "^3"
+      "symbiote/silverstripe-gridfieldextensions": "^4"
   },
   "extra": {
     "expose": [

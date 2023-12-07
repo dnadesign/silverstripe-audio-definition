@@ -45,7 +45,7 @@ class AudioDefinition_ContextExtension extends Extension
         foreach ($options as $option) {
             $id = isset($option['value']) ? $option['value'] : null;
             if (is_numeric($id)) {
-                if ($id === 0) {
+                if ($id === "0") {
                     $alteredOptions[] = $option;
                 } else {
                     // Find the context associated with the text definition
