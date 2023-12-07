@@ -12,9 +12,22 @@ use SilverStripe\ORM\FieldType\DBHTMLText;
 
 class TextDefinition_ContextExtension extends DataExtension
 {
+    private static $db = [
+        'ContextsKey' => 'Text'
+    ];
+
     private static $many_many = [
         'Contexts' => TextDefinitionContext::class
     ];
+
+    /**
+     * Keep track of contexts changes so the LastEdited date changes on the text definition table
+     * and the cache key is updated accordingly
+     */
+    public function onBeforeWrite()
+    {
+        $this->owner->ContextsKey = serialize($this->owner->Contexts()->map()->toArray());
+    }
 
     /**
      * Add context selector
@@ -25,7 +38,10 @@ class TextDefinition_ContextExtension extends DataExtension
     public function updateCMSFields(FieldList $fields)
     {
         // Remove Context Tab
-        $fields->removeByName('Contexts');
+        $fields->removeByName([
+            'Contexts',
+            'ContextsKey'
+        ]);
 
         // Show context selector only of parent is in a locale that requires context
         if ($this->owner->requireContext()) {
