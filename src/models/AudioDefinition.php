@@ -242,11 +242,12 @@ class AudioDefinition extends DataObject implements PermissionProvider
     /**
      * Return the language as a readable string
      *
-     * @return void
+     * @return DBText
      */
     public function getLanguageName()
     {
-        return DBField::create_field(DBText::class, \Locale::getDisplayLanguage($this->Locale, i18n::get_locale()));
+        $locale = $this->Locale ? $this->Locale : '';
+        return DBField::create_field(DBText::class, \Locale::getDisplayLanguage($locale, i18n::get_locale()));
     }
 
     /**
@@ -302,9 +303,9 @@ class AudioDefinition extends DataObject implements PermissionProvider
 
         $params = [
             $audioDefinitions->count(),
-            strtotime($audioDefinitions->max('LastEdited')),
+            strtotime($audioDefinitions->max('LastEdited')?:''),
             $textDefinitions->count(),
-            strtotime($textDefinitions->max('LastEdited')),
+            strtotime($textDefinitions->max('LastEdited')?:''),
         ];
 
         $this->extend('updateCacheKeyParams', $params);
@@ -435,5 +436,39 @@ class AudioDefinition extends DataObject implements PermissionProvider
                 )
             )
         ];
+    }
+
+    /**
+     * Build a representation of this AudioDefinition as a JSON object
+     * that can be included in a template from the ShortCode render
+     * 
+     * @return json
+     */
+    public function toJSON($args = null)
+    {
+        $data = [
+            'id' => $this->ID,
+            'term' => $this->Term,
+            'audioSrc' => $this->LinkToAudioFile,
+            'lang' => $this->getLanguageName()->Raw()
+        ];
+
+        $definitionsToDisplay = $this->getDefinitionsToDisplay($args);
+
+        if ($definitionsToDisplay->count() > 0) {
+            $definitions = [];
+            
+            foreach ($definitionsToDisplay as $definition) {
+                $definitions[] = [
+                    'id' => $definition->ID,
+                    'type' => $definition->Type,
+                    'content' => $definition->Content
+                ];
+            }
+
+            $data['definitions'] = $definitions;
+        }
+
+        return json_encode($data);
     }
 }
