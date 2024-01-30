@@ -32,9 +32,10 @@ class MaoriTranslationService implements TranslationService
      * related to the keywords
      *
      * @param string $wordOrSentence
+     * @param AudioDefinition|null $object
      * @return array
      */
-    public function getDefinitionAndAudio($wordOrSentence): array
+    public function getDefinitionAndAudio($wordOrSentence, $object = null): array
     {
         $uri = self::get_search_url(strtolower($wordOrSentence));
 
