@@ -3,13 +3,11 @@
 namespace DNADesign\AudioDefinition\Models;
 
 use DNADesign\AudioDefinition\Models\TextDefinition;
-use DNADesign\AudioDefinition\Services\FileUploadTranslationService;
 use DNADesign\AudioDefinition\Services\MaoriTranslationService;
 use DNADesign\AudioDefinition\Shortcodes\AudioDefinitionShortcodeProvider;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
-use SilverStripe\Assets\File;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
@@ -40,16 +38,8 @@ class AudioDefinition extends DataObject implements PermissionProvider
         'FetchedFromService' => 'Datetime'
     ];
 
-    private static $has_one = [
-        'AudioFile' => File::class
-    ];
-
     private static $has_many = [
         'Definitions' => TextDefinition::class
-    ];
-
-    private static $owns = [
-        'AudioFile'
     ];
 
     private static $defaults = [
@@ -77,7 +67,6 @@ class AudioDefinition extends DataObject implements PermissionProvider
             if ($audio && $this->FetchedFromService) {
                 $audio->setReadonly(true);
             }
-            $this->setupDisplayRulesForField($audio, 'hideIf');
 
             // FetchedFromService
             $fetched = $fields->dataFieldByName('FetchedFromService');
@@ -86,14 +75,6 @@ class AudioDefinition extends DataObject implements PermissionProvider
                 // Remove default description from DateTimeField
                 $fetched->setDescription('');
             }
-            $this->setupDisplayRulesForField($fetched, 'hideIf');
-
-            // AudioFile
-            $audioFileField = $fields->dataFieldByName('AudioFile');
-            $audioFileField->setDescription('Please upload your translation in mp3 format.')
-                ->setFolderName('AudioTranslations')
-                ->setAllowedExtensions(['mp3']);
-            $this->setupDisplayRulesForField($audioFileField);
 
             if ($this->IsInDB()) {
                 // Definitions
@@ -122,32 +103,6 @@ class AudioDefinition extends DataObject implements PermissionProvider
         });
 
         return parent::getCMSFields();
-    }
-
-    /**
-     * Sets up display rules for CMS fields base on whether or not
-     * a Locale is using the FileUploadTranslationService.
-     *
-     * @param FormField $field
-     * @param string $criteria 
-     */
-    public function setupDisplayRulesForField($field, $criteria = 'displayIf')
-    {
-        $rules = []; 
-        $sources = $this->config()->get('sources');
-        if ($sources && is_array($sources)) {
-            foreach ($sources as $locale => $service) {
-                if($service === FileUploadTranslationService::class) {  
-                    $rules[] = "->$criteria('Locale')->isEqualTo('$locale')";
-                    $criteria = 'orIf';
-                }
-            }
-        }
-
-        if (!empty($rules)) {
-            // Apply the generated rules to the field.
-            eval('$field' . implode('', $rules) . ';');
-        }
     }
 
     /**
@@ -202,36 +157,6 @@ class AudioDefinition extends DataObject implements PermissionProvider
     }
 
     /**
-     * Checks if the Locale is using the FileUploadTranslationService
-     *
-     * @return bool
-     */
-    public function isLocaleUsingFileUploadTranslationService()
-    {
-        if ($this->Locale) {
-            $sources = $this->config()->get('sources');
-            if ($sources && is_array($sources)) {
-                return isset($sources[$this->Locale]) && $sources[$this->Locale] === FileUploadTranslationService::class;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * If the current Locale is using the FileUploadTranslationService 
-     * This will set the value of LinkToAudioFile to the absolute URL of AudioFile
-     */
-    public function onBeforeWrite()
-    {
-        parent::onBeforeWrite();
-
-        if($this->isLocaleUsingFileUploadTranslationService() && $this->owner->AudioFile()->exists()) {
-            $this->owner->LinkToAudioFile = $this->owner->AudioFile()->AbsoluteLink();
-        }
-    }
-
-    /**
      * Attempt to fetch the definition upon saving the object
      *
      * @return void
@@ -244,7 +169,7 @@ class AudioDefinition extends DataObject implements PermissionProvider
             $source = $this->getSourceService();
             if ($source) {
                 try {
-                    $data = $source->getDefinitionAndAudio($this->Term);
+                    $data = $source->getDefinitionAndAudio($this->Term, $this);
                     if ($data && is_array($data)) {
                         if (isset($data['definitions']) && is_array($data['definitions'])) {
                             foreach ($data['definitions'] as $definition) {

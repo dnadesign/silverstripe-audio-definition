@@ -8,26 +8,34 @@ class FileUploadTranslationService implements TranslationService
 {
 
     /**
-     * Always set to false as this is handled in onBeforeWrite
+     * Always set to true as this doesn't use an API.   
      *
      * @return boolean
      */
     public function enabled(): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Function only exists to fulfill the contract of the TranslationService interface.
+     * Sets the audioSrc to the AbsoluteLink of of the AudioFile 
+     * uploaded to the AudioDefinition. As no API is used the definitions 
+     * will be added manually by the CMS user.
      *
-     * @param string $wordOrSentence
-     * @return array
+     * @param string $wordOrSentence 
+     * @param AudioDefinition|null $object
+     * @return array 
      */
-    public function getDefinitionAndAudio($wordOrSentence): array
+    public function getDefinitionAndAudio($wordOrSentence, $object = null): array
     {
+        $audioSrc = null;
+        if ($object && $object->AudioFile()->exists()) {
+            $audioSrc = $object->AudioFile()->AbsoluteLink();
+        }
+
         return [
-            'definitions' => [],
-            'audioSrc' => null
+            'definitions' =>  [],
+            'audioSrc' => $audioSrc
         ];
     }
 }

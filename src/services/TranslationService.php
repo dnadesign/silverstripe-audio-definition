@@ -9,9 +9,10 @@ interface TranslationService
      * definitions and/or audioSrc
      *
      * @param string $wordOrSentence
+     * @param AudioDefinition || null $object
      * @return array
      */
-    public function getDefinitionAndAudio($wordOrSentence): array;
+    public function getDefinitionAndAudio($wordOrSentence, $object = null): array;
 
     /**
      * Return whether a service is ready to be used
