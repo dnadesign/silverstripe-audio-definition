@@ -2,6 +2,7 @@
 
 namespace DNADesign\AudioDefinition\Services;
 
+use DNADesign\AudioDefinition\Models\AudioDefinition;
 use DNADesign\AudioDefinition\Services\TranslationService;
 
 class FileUploadTranslationService implements TranslationService
@@ -22,11 +23,10 @@ class FileUploadTranslationService implements TranslationService
      * uploaded to the AudioDefinition. As no API is used the definitions 
      * will be added manually by the CMS user.
      *
-     * @param string $wordOrSentence 
-     * @param AudioDefinition|null $object
+     * @param AudioDefinition $object
      * @return array 
      */
-    public function getDefinitionAndAudio($wordOrSentence, $object = null): array
+    public function getDefinitionAndAudio(AudioDefinition $object): array
     {
         $audioSrc = null;
         if ($object && $object->AudioFile()->exists()) {
