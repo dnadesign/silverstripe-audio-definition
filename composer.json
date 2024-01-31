@@ -17,7 +17,8 @@
       "silverstripe/vendor-plugin": "^1.0",
       "silverstripe/framework": "^4.0",
       "guzzlehttp/guzzle": "^6.3|^7",
-      "symbiote/silverstripe-gridfieldextensions": "^3"
+      "symbiote/silverstripe-gridfieldextensions": "^3",
+      "unclecheese/display-logic": "^2.0"
   },
   "extra": {
     "expose": [

@@ -79,12 +79,25 @@ As an example, this is the markup you could use with [tippy.js](https://atomiks.
 ### Add different languages/translators
 
 If you would like to add a different language to choose from when creating a definition, you can add a new locale to the AudioDefinition sources via the config:
+
 ```
 DNADesign\AudioDefinition\Models\AudioDefinition:
   sources:
-    es_ES: 'SpanishTranslationServiceClass'
+    es_ES: NameSpace\Services\SpanishTranslationServiceClass
 ```
-A translation service is optional. If you choose to use one, you can create a new service which must implement `DNADesign\AudioDefinition\Services`. This class must define a method `getDefinitionAndAudio` which returns an array that must contain:
+
+This will require a different translation service, you can either create a custom translation service
+or use the built it FileUploadTranslationService by activating the AudioDefinition_FileUploadExtension.
+
+```
+DNADesign\AudioDefinition\Models\AudioDefinition:
+  sources:
+    es_ES: DNADesign\AudioDefinition\Services\FileUploadTranslationService
+  extensions:
+    - DNADesign\AudioDefinition\Extensions\AudioDefinition_FileUploadExtension
+```
+
+If you choose to create a custom service it must implement `DNADesign\AudioDefinition\Services`. This class must define a method `getDefinitionAndAudio` which returns an array that must contain:
 ```
 $data = [
     'audioSrc' => 'Link to audio file',
