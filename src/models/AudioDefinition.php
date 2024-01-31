@@ -169,7 +169,7 @@ class AudioDefinition extends DataObject implements PermissionProvider
             $source = $this->getSourceService();
             if ($source) {
                 try {
-                    $data = $source->getDefinitionAndAudio($this->Term, $this);
+                    $data = $source->getDefinitionAndAudio($this);
                     if ($data && is_array($data)) {
                         if (isset($data['definitions']) && is_array($data['definitions'])) {
                             foreach ($data['definitions'] as $definition) {
