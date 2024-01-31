@@ -24,10 +24,6 @@ class AudioDefinition_FileUploadExtension extends Extension
      */
     public function updateCMSFields(FieldList $fields)
     {
-        // LinkToAudioFile
-        $audio = $fields->dataFieldByName('LinkToAudioFile');
-        $this->setupDisplayRulesForField($audio, 'hideIf');
-
         // AudioFile
         $audioFileField = $fields->dataFieldByName('AudioFile');
         $audioFileField->setDescription('Please upload your translation in mp3 format.')
