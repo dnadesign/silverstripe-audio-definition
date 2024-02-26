@@ -125,3 +125,4 @@ This won't have an influence on the way the definitions are displayed out-of-the
 ## NOTES
 
 Icons made by [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect) from [www.flaticon.com](https://www.flaticon.com/)
+

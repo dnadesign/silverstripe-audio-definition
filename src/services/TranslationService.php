@@ -2,16 +2,18 @@
 
 namespace DNADesign\AudioDefinition\Services;
 
+use DNADesign\AudioDefinition\Models\AudioDefinition;
+
 interface TranslationService
 {
     /**
      * Should return an array containing
      * definitions and/or audioSrc
      *
-     * @param string $wordOrSentence
+     * @param AudioDefinition $object
      * @return array
      */
-    public function getDefinitionAndAudio($wordOrSentence): array;
+    public function getDefinitionAndAudio(AudioDefinition $object): array;
 
     /**
      * Return whether a service is ready to be used

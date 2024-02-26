@@ -2,6 +2,7 @@
 
 namespace DNADesign\AudioDefinition\Services;
 
+use DNADesign\AudioDefinition\Models\AudioDefinition;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use Psr\Log\LoggerInterface;
@@ -29,14 +30,14 @@ class MaoriTranslationService implements TranslationService
 
     /**
      * Queries the service to retrieve the information
-     * related to the keywords
+     * related to the keywords ($object->Term)
      *
-     * @param string $wordOrSentence
+     * @param AudioDefinition $object
      * @return array
      */
-    public function getDefinitionAndAudio($wordOrSentence): array
+    public function getDefinitionAndAudio(AudioDefinition $object): array
     {
-        $uri = self::get_search_url(strtolower($wordOrSentence));
+        $uri = self::get_search_url(strtolower($object->Term));
 
         $info = [
             'definitions' => null,
