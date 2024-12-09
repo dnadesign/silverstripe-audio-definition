@@ -4,13 +4,16 @@ namespace DNADesign\AudioDefinition\Extensions;
 
 use DNADesign\AudioDefinition\Models\TextDefinition;
 use DNADesign\AudioDefinition\Models\TextDefinitionContext;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ListboxField;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 
-class TextDefinition_ContextExtension extends DataExtension
+/**
+ * @extends Extension<(TextDefinition & static)>
+ */
+class TextDefinition_ContextExtension extends Extension
 {
     private static $db = [
         'ContextsKey' => 'Text'
@@ -46,7 +49,7 @@ class TextDefinition_ContextExtension extends DataExtension
         // Show context selector only of parent is in a locale that requires context
         if ($this->owner->requireContext()) {
             $contexts = ListboxField::create('Contexts', 'Contexts', TextDefinitionContext::get()->map());
-            $fields->addFieldsToTab('Root.Main', $contexts);
+            $fields->addFieldToTab('Root.Main', $contexts);
         }
     }
 
