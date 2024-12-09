@@ -8,6 +8,9 @@ use DNADesign\AudioDefinition\Models\TextDefinitionContext;
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\DataList;
 
+/**
+ * @extends Extension<(AudioDefinition & static)>
+ */
 class AudioDefinition_ContextExtension extends Extension
 {
     /**

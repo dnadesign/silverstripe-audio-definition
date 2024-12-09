@@ -2,11 +2,16 @@
 
 namespace DNADesign\AudioDefinition\Extensions;
 
+use DNADesign\AudioDefinition\Models\AudioDefinition;
 use DNADesign\AudioDefinition\Services\FileUploadTranslationService;
 use SilverStripe\Assets\File;
 use SilverStripe\Core\Extension;
+use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\FieldList;
 
+/**
+ * @extends Extension<(AudioDefinition & static)>
+ */
 class AudioDefinition_FileUploadExtension extends Extension
 {
     private static $has_one = [
