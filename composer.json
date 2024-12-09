@@ -23,5 +23,13 @@
     "expose": [
         "client"
     ]
+  },
+  "autoload": {
+    "psr-4": {
+      "DNADesign\\AudioDefinition\\Admins\\": "src/admins",
+      "DNADesign\\AudioDefinition\\Extensions\\": "src/extensions",
+      "DNADesign\\AudioDefinition\\Models\\": "src/models",
+      "DNADesign\\AudioDefinition\\Services\\": "src/services"
+    }
   }
 }
