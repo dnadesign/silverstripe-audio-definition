@@ -7,7 +7,7 @@ SilverStripe\Core\Injector\Injector:
     constructor:
       namespace: "audioDefinitionCache"
 
-SilverStripe\Forms\HTMLEditor\TinyMCEConfig:
+SilverStripe\TinyMCE\TinyMCEConfig:
   editor_css:
     - 'dnadesign/silverstripe-audio-definition:client/css/editor.css'
 

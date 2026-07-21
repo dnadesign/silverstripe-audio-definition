@@ -6,7 +6,7 @@ use DNADesign\AudioDefinition\Models\AudioDefinition;
 use DNADesign\AudioDefinition\Models\TextDefinition;
 use DNADesign\AudioDefinition\Shortcodes\AudioDefinitionShortcodeProvider;
 use SilverStripe\Core\Manifest\ModuleLoader;
-use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
+use SilverStripe\TinyMCE\TinyMCEConfig;
 use SilverStripe\ORM\DB;
 use SilverStripe\View\Parsers\ShortcodeParser;
 use SilverStripe\View\Requirements;
