@@ -3,8 +3,8 @@
 namespace DNADesign\AudioDefinition\Models;
 
 use DNADesign\AudioDefinition\Models\AudioDefinition;
-use SilverStripe\Forms\CompositeValidator;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\Validation\CompositeValidator;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 use SilverStripe\ORM\DataObject;
 
 class TextDefinition extends DataObject
@@ -63,7 +63,7 @@ class TextDefinition extends DataObject
     {
         $compositeValidator = parent::getCMSCompositeValidator();
 
-        $compositeValidator->addValidator(RequiredFields::create(['Content', 'Type']));
+        $compositeValidator->addValidator(RequiredFieldsValidator::create(['Content', 'Type']));
     
         return $compositeValidator;
     }
