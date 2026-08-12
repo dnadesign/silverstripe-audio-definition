@@ -182,7 +182,7 @@ class AudioDefinition extends DataObject implements PermissionProvider
                                 // Create object
                                 if ($exists === false && isset($definition['content'])) {
                                     $defObject = new TextDefinition();
-                                    $defObject->UID = isset($definition['id']) ? $definition['id'] : null;
+                                    $defObject->UID = isset($definition['id']) ? (string) $definition['id'] : null;
                                     $defObject->Content = ucfirst($definition['content']);
                                     $defObject->Type = isset($definition['type']) ? ucfirst($definition['type']) : null;
                                     $defObject->AudioDefinitionID = $this->ID;
