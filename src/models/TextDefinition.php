@@ -55,6 +55,20 @@ class TextDefinition extends DataObject
     }
 
     /**
+     * Returns Content restricted to a allowlist of tags to maintain formatting but prevent harmful script injection.
+     *
+     * @return string
+     */
+    public function getSafeContent(): string
+    {
+        $allowedTags = '<em><i><strong><b>';
+        $content = strip_tags($this->Content ?? '', $allowedTags);
+
+        // Remove all attributes from allowed tags.
+        return preg_replace('/<(em|i|strong|b)\b[^>]*>/i', '<$1>', $content ?? '');
+    }
+
+    /**
      * Require Content and Type as a definition would not make sense without them
      *
      * @return CompositeValidator
