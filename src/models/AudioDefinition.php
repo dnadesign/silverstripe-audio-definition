@@ -8,6 +8,7 @@ use DNADesign\AudioDefinition\Shortcodes\AudioDefinitionShortcodeProvider;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
@@ -360,7 +361,7 @@ class AudioDefinition extends DataObject implements PermissionProvider
 
         $codes = AudioDefinitionShortcodeProvider::get_shortcodes();
         foreach ($codes as $code) {
-            $signature = sprintf('[%s id="%s"]%s[/%s]', $code, $this->ID, $this->Term, $code);
+            $signature = sprintf('[%s id="%s"]%s[/%s]', $code, $this->ID, Convert::raw2xml($this->Term), $code);
             $list[] = $signature;
         }
 
